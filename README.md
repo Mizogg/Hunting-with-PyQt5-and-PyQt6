@@ -2,7 +2,7 @@
 
 Offline Version (QT_main.py)
 
-![image](https://user-images.githubusercontent.com/88630056/209581706-4f5ca22f-0f4d-4f58-bf9a-16487cb55d3c.png)
+![image](https://user-images.githubusercontent.com/88630056/209684288-0d1f4578-832a-4fe4-a37b-cbf8d4ba7441.png)
 
 
 On line Version (QT_main_bal.py)
