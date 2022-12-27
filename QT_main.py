@@ -3,10 +3,8 @@ import random
 import ecdsa
 import hashlib
 import base58
-import mnemonic
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QRadioButton, QButtonGroup
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QGridLayout, QRadioButton, QButtonGroup
 from PyQt5.QtCore import QTimer
-from mnemonic import Mnemonic
 from bloomfilter import BloomFilter, ScalableBloomFilter, SizeGrowthRate
 with open('btc.bf', "rb") as fp:
     bloom_filterbtc = BloomFilter.load(fp)
@@ -15,6 +13,28 @@ app = QApplication(sys.argv)
 class GUI(QWidget):
     def __init__(self):
         super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        # Create a grid layout to hold the instances of the GUI
+        grid_layout = QGridLayout()
+
+        # Create instances of the GUI and add them to the grid layout
+        for row in range(2): # Change here the ammount
+            for col in range(7): # Change here the ammount
+                instance = GUIInstance(row, col)
+                grid_layout.addWidget(instance, row, col)
+
+        # Set the main window's layout to the grid layout
+        self.setLayout(grid_layout)
+        self.setGeometry(100, 60, 1800, 700)
+        self.setWindowTitle('Hunter QT with Mizogg')
+
+class GUIInstance(QWidget):
+    def __init__(self, row, col):
+        super().__init__()
+        self.row = row
+        self.col = col
         self.initUI()
 
     def initUI(self):
@@ -56,11 +76,6 @@ class GUI(QWidget):
         self.private_key_edit = QLineEdit()
         self.private_key_edit.setReadOnly(True)
 
-        # Create a label and line edit for the mnemonic phrase
-        mnemonic_phrase_label = QLabel('Mnemonic phrase:')
-        self.mnemonic_phrase_edit = QLineEdit()
-        self.mnemonic_phrase_edit.setReadOnly(True)
-
         # Create a label and line edit for the uncompressed address
         uncompressed_address_label = QLabel('Uncompressed address:')
         self.uncompressed_address_edit = QLineEdit()
@@ -82,15 +97,11 @@ class GUI(QWidget):
         layout.addWidget(stop_button)
         layout.addWidget(private_key_label)
         layout.addWidget(self.private_key_edit)
-        layout.addWidget(mnemonic_phrase_label)
-        layout.addWidget(self.mnemonic_phrase_edit)
         layout.addWidget(uncompressed_address_label)
         layout.addWidget(self.uncompressed_address_edit)
         layout.addWidget(compressed_address_label)
         layout.addWidget(self.compressed_address_edit)
         self.setLayout(layout)
-        self.setGeometry(100, 60, 1000, 400)
-        self.setWindowTitle('Hunter QT with Mizogg')
 
     def start(self):
         # Get the start and end hex values from the line edits
@@ -176,21 +187,15 @@ class GUI(QWidget):
         base58_address_uncompressed = base58.b58encode(binary_address_uncompressed)
         base58_address_compressed = base58.b58encode(binary_address_compressed)
 
-        # Create a Mnemonic object with the English wordlist
-        mnemo = mnemonic.Mnemonic("english")
-
-        # Convert the private key to a mnemonic phrase
-        mnemonic_phrase = mnemo.to_mnemonic(private_key)
-
-        # Display the private key, mnemonic phrase, and addresses in the line edits
+        # Display the private key, and addresses in the line edits
         self.private_key_edit.setText(private_key.hex())
-        self.mnemonic_phrase_edit.setText(mnemonic_phrase)
+
         self.uncompressed_address_edit.setText(base58_address_uncompressed.decode())
         self.compressed_address_edit.setText(base58_address_compressed.decode())
         if  base58_address_compressed.decode() in bloom_filterbtc or base58_address_uncompressed.decode() in bloom_filterbtc:
             print ('winner')
             with open('found.txt', 'a') as result:
-                result.write(f'\n Hex Key: {private_key.hex()}\n Mnemonic {mnemonic_phrase} \nBTC Address Compressed: {base58_address_compressed.decode()} \nBTC Address Uncompressed: {base58_address_uncompressed.decode()}')
+                result.write(f'\n Hex Key: {private_key.hex()} \nBTC Address Compressed: {base58_address_compressed.decode()} \nBTC Address Uncompressed: {base58_address_uncompressed.decode()}')
 
     def update_display_sequence(self):
         # Generate a private key from the current value
@@ -247,21 +252,15 @@ class GUI(QWidget):
         base58_address_uncompressed = base58.b58encode(binary_address_uncompressed)
         base58_address_compressed = base58.b58encode(binary_address_compressed)
 
-        # Create a Mnemonic object with the English wordlist
-        mnemo = mnemonic.Mnemonic("english")
-
-        # Convert the private key to a mnemonic phrase
-        mnemonic_phrase = mnemo.to_mnemonic(private_key)
-
-        # Display the private key, mnemonic phrase, and addresses in the line edits
+        # Display the private key, and addresses in the line edits
         self.private_key_edit.setText(private_key.hex())
-        self.mnemonic_phrase_edit.setText(mnemonic_phrase)
+
         self.uncompressed_address_edit.setText(base58_address_uncompressed.decode())
         self.compressed_address_edit.setText(base58_address_compressed.decode())
         if  base58_address_compressed.decode() in bloom_filterbtc or base58_address_uncompressed.decode() in bloom_filterbtc:
             print ('winner')
             with open('found.txt', 'a') as result:
-                result.write(f'\n Hex Key: {private_key.hex()}\n Mnemonic {mnemonic_phrase} \nBTC Address Compressed: {base58_address_compressed.decode()} \nBTC Address Uncompressed: {base58_address_uncompressed.decode()}')
+                result.write(f'\n Hex Key: {private_key.hex()} \nBTC Address Compressed: {base58_address_compressed.decode()} \nBTC Address Uncompressed: {base58_address_uncompressed.decode()}')
 
 if __name__ == '__main__':
     gui = GUI()
