@@ -4,6 +4,10 @@ Offline Version (QT_main.py)
 
 ![image](https://user-images.githubusercontent.com/88630056/209684288-0d1f4578-832a-4fe4-a37b-cbf8d4ba7441.png)
 
+This is for 2 rows with 7 on each row total 14 if you want more change here !!
+
+![image](https://user-images.githubusercontent.com/88630056/209684330-23dfe48e-db02-4fdc-8746-8b14bd1de148.png)
+
 
 On line Version (QT_main_bal.py)
 
