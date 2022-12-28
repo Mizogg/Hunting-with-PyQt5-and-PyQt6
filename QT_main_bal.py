@@ -213,8 +213,6 @@ class GUI(QWidget):
             self.scanning = False
             return
 
-        # Display the private key
-        self.private_key_edit.setText(private_key)
         # Use a regular expression to remove any non-hexadecimal characters from the private_key string
         # Convert the private key to a bytes object
         private_key = int(private_key, 16)
