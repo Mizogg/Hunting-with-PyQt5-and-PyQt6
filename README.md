@@ -2,6 +2,8 @@
 
 Offline Version (QT_main.py)
 
+![image](https://user-images.githubusercontent.com/88630056/209880734-971f3fe5-555b-4122-ba2e-5bb4b74837db.png)
+
 ![image](https://user-images.githubusercontent.com/88630056/209684288-0d1f4578-832a-4fe4-a37b-cbf8d4ba7441.png)
 
 This is for 2 rows with 7 on each row total 14 if you want more change here !!
