@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButto
 from PyQt5.QtCore import QTimer
 from bloomfilter import BloomFilter, ScalableBloomFilter, SizeGrowthRate
 import secp256k1 as ice
-
+import time
 with open('btc.bf', "rb") as fp:
     bloom_filterbtc = BloomFilter.load(fp)
 
@@ -114,7 +114,7 @@ class GUIInstance(QWidget):
         ethaddr_address_label = QLabel('Eth address:')
         self.ethaddr_address_edit = QLineEdit()
         self.ethaddr_address_edit.setReadOnly(True)
-        
+
         # Set the layout
         layout = QVBoxLayout()
         layout.addLayout(radio_button_layout)
@@ -136,7 +136,31 @@ class GUIInstance(QWidget):
         layout.addWidget(self.bech32_address_edit)
         layout.addWidget(ethaddr_address_label)
         layout.addWidget(self.ethaddr_address_edit)
+        # Add horizontal layout to hold total keys scanned and keys per second
+        keys_layout = QHBoxLayout()
+
+        # Add total keys scanned label and line edit to horizontal layout
+        total_keys_scanned_label = QLabel('Total keys scanned:')
+        self.total_keys_scanned_edit = QLineEdit()
+        self.total_keys_scanned_edit.setReadOnly(True)
+        self.total_keys_scanned_edit.setText('0')  # Set initial value to 0
+        keys_layout.addWidget(total_keys_scanned_label)
+        keys_layout.addWidget(self.total_keys_scanned_edit)
+
+        # Add keys per second label and line edit to horizontal layout
+        keys_per_sec_label = QLabel('Keys per second:')
+        self.keys_per_sec_edit = QLineEdit()
+        self.keys_per_sec_edit.setReadOnly(True)
+        keys_layout.addWidget(keys_per_sec_label)
+        keys_layout.addWidget(self.keys_per_sec_edit)
+
+        # Add horizontal layout to main vertical layout
+        layout.addLayout(keys_layout)
+
         self.setLayout(layout)
+        # Initialize counter and timer variables
+        self.counter = 0
+        self.timer = time.time()
 
     def start(self):
         start_hex = self.start_edit.text()
@@ -151,7 +175,13 @@ class GUIInstance(QWidget):
             self.current = start
             self.timer = QTimer(self)
             self.timer.timeout.connect(self.update_display_sequence)
-        self.timer.start()
+        self.timer.start(1)
+
+        # Set start time to current time in seconds
+        self.start_time = time.time()
+
+        # Connect timer's timeout signal to update_keys_per_sec method
+        self.timer.timeout.connect(self.update_keys_per_sec)
 
     def stop(self):
         self.timer.stop()
@@ -201,6 +231,7 @@ class GUIInstance(QWidget):
             print(WINTEXT)
             with open("foundeth.txt", "a") as f:
                 f.write(WINTEXT)
+        self.counter += 1
 
     def update_display_sequence(self):
         HEX = hex(self.current)[2:]
@@ -248,6 +279,20 @@ class GUIInstance(QWidget):
             print(WINTEXT)
             with open("foundeth.txt", "a") as f:
                 f.write(WINTEXT)
+        self.counter += 1
+        
+    def update_keys_per_sec(self):
+        elapsed_time = time.time() - self.start_time
+        if elapsed_time == 0:
+            keys_per_sec = 0
+        else:
+            keys_per_sec = self.counter / elapsed_time
+        keys_per_sec = round(keys_per_sec, 2)
+        self.keys_per_sec_edit.setText(str(keys_per_sec))
+        self.start_time = time.time()
+        total_keys_scanned = int(self.total_keys_scanned_edit.text()) + self.counter
+        self.total_keys_scanned_edit.setText(str(total_keys_scanned))
+        self.counter = 0
 
 if __name__ == '__main__':
     gui = GUI()
