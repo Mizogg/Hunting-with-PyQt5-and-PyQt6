@@ -8,6 +8,9 @@ ICE.bat to get going this will open 3x QT_main_ICE.py programs.
 
 ![image](https://user-images.githubusercontent.com/88630056/210181263-639737f5-9ce2-44fc-8532-5d07ebfc3137.png)
 
+QT_main_ICE_Display.py
+
+![image](https://user-images.githubusercontent.com/88630056/210436557-14ec2c09-9a74-4cd2-aca7-7d74b74d05d1.png)
 
 
 Offline Version (QT_main.py)
