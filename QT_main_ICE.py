@@ -274,7 +274,7 @@ class GUIInstance(QWidget):
         layout.addLayout(power_layout)
         self.timer_cpu = QTimer()
         self.timer_cpu.timeout.connect(self.update_usage)
-        self.timer_cpu.start(1000)
+        self.timer_cpu.start(500)
         progress_layout_text = QHBoxLayout()
         progress_label = QLabel('progress %')
         self.progress_bar = QProgressBar()
@@ -360,9 +360,11 @@ class GUIInstance(QWidget):
         self.timer.stop()
         self.scanning = False
         
-    def generate_crypto(self, dec):
+    def generate_crypto(self):
         found = int(self.found_keys_scanned_edit.text())
-        for r in range (0,self.power_format):
+        startPrivKey = (self.num - 1)
+        for i in range (0,self.power_format):
+            dec = int(startPrivKey)
             HEX = "%064x" % dec
             caddr = ice.privatekey_to_address(0, True, dec)
             uaddr = ice.privatekey_to_address(0, False, dec)
@@ -404,7 +406,7 @@ class GUIInstance(QWidget):
                 print(WINTEXT)
                 with open("foundeth.txt", "a") as f:
                     f.write(WINTEXT)
-            dec+=r
+            startPrivKey+=1
         self.value_edit_dec.setText(str(dec))
         self.value_edit_hex.setText(HEX)
         self.uncompressed_address_edit.setText(uaddr)
@@ -412,7 +414,6 @@ class GUIInstance(QWidget):
         self.p2sh_address_edit.setText(p2sh)
         self.bech32_address_edit.setText(bech32)
         self.ethaddr_address_edit.setText(ethaddr)
-        
         if self.sequence_button.isChecked():
             with open('start_scanned_key.txt', 'w') as f:
                 f.write(str(dec))
@@ -425,15 +426,15 @@ class GUIInstance(QWidget):
             self.timer.stop()
             return
         rng = random.SystemRandom()
-        dec = rng.randint(start, end)
+        self.num = rng.randint(start, end)
         total_steps = end - start
-        percentage = 100.0 * dec / total_steps
+        percentage = 100.0 * self.num / total_steps
         self.progress_bar.setValue(int(percentage))
-        self.generate_crypto(dec)
+        self.generate_crypto()
         self.counter += self.power_format
 
     def update_display_sequence(self, key_format, start, end):
-        dec = self.current
+        self.num = self.current
         if key_format == "Hexadecimal":
             if self.current > int(self.end_edit.text(), 16):
                 self.timer.stop()
@@ -450,14 +451,14 @@ class GUIInstance(QWidget):
                 self.scanning = False
                 return
         total_steps = end - start
-        percentage = 100.0 * dec / total_steps
+        percentage = 100.0 * self.num / total_steps
         self.progress_bar.setValue(int(percentage))
-        self.generate_crypto(dec)
+        self.generate_crypto()
         self.current += self.power_format
         self.counter += self.power_format
 
     def update_display_reverse(self, key_format, start, end):
-        dec = self.current
+        self.num = self.current
         if key_format == "Hexadecimal":
             if self.current < int(self.start_edit.text(), 16):
                 self.timer.stop()
@@ -474,9 +475,9 @@ class GUIInstance(QWidget):
                 self.scanning = False
                 return
         total_steps = end - start
-        percentage = 100.0 * dec / total_steps
+        percentage = 100.0 * self.num / total_steps
         self.progress_bar.setValue(int(percentage))
-        self.generate_crypto(dec)
+        self.generate_crypto()
         self.current -= self.power_format
         self.counter += self.power_format
     
