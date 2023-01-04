@@ -336,6 +336,7 @@ class GUIInstance(QWidget):
         elif key_format == "Bits":
             start = 2**(int(start_value))
             end = 2**(int(end_value))
+        self.total_steps = end - start
         self.scanning = True
         if self.random_button.isChecked():
             self.timer = QTimer(self)
@@ -343,11 +344,11 @@ class GUIInstance(QWidget):
         elif self.sequence_button.isChecked():
             self.current = start
             self.timer = QTimer(self)
-            self.timer.timeout.connect(lambda: self.update_display_sequence(key_format, start, end))
+            self.timer.timeout.connect(lambda: self.update_display_sequence(key_format))
         elif self.reverse_button.isChecked():
             self.current = end
             self.timer = QTimer(self)
-            self.timer.timeout.connect(lambda: self.update_display_reverse(key_format, start, end))
+            self.timer.timeout.connect(lambda: self.update_display_reverse(key_format))
         self.timer.start()
 
         # Set start time to current time in seconds
@@ -362,7 +363,7 @@ class GUIInstance(QWidget):
         
     def generate_crypto(self):
         found = int(self.found_keys_scanned_edit.text())
-        startPrivKey = (self.num - 1)
+        startPrivKey = self.num
         for i in range (0,self.power_format):
             dec = int(startPrivKey)
             HEX = "%064x" % dec
@@ -433,7 +434,7 @@ class GUIInstance(QWidget):
         self.generate_crypto()
         self.counter += self.power_format
 
-    def update_display_sequence(self, key_format, start, end):
+    def update_display_sequence(self, key_format):
         self.num = self.current
         if key_format == "Hexadecimal":
             if self.current > int(self.end_edit.text(), 16):
@@ -450,14 +451,13 @@ class GUIInstance(QWidget):
                 self.timer.stop()
                 self.scanning = False
                 return
-        total_steps = end - start
-        percentage = 100.0 * self.num / total_steps
+        percentage = 100.0 * self.num / self.total_steps
         self.progress_bar.setValue(int(percentage))
         self.generate_crypto()
         self.current += self.power_format
         self.counter += self.power_format
 
-    def update_display_reverse(self, key_format, start, end):
+    def update_display_reverse(self, key_format):
         self.num = self.current
         if key_format == "Hexadecimal":
             if self.current < int(self.start_edit.text(), 16):
@@ -474,8 +474,7 @@ class GUIInstance(QWidget):
                 self.timer.stop()
                 self.scanning = False
                 return
-        total_steps = end - start
-        percentage = 100.0 * self.num / total_steps
+        percentage = 100.0 * self.num / self.total_steps
         self.progress_bar.setValue(int(percentage))
         self.generate_crypto()
         self.current -= self.power_format
