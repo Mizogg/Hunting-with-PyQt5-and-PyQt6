@@ -1,4 +1,4 @@
-# Hunting-with-PyQt5  & PyQt6
+# 🐍 Hunting-with-PyQt5  & PyQt6 🐍
 
 
 ```
