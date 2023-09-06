@@ -1,4 +1,19 @@
-# Hunting-with-PyQt5
+# Hunting-with-PyQt5  & PyQt6
+
+
+```
+pip install pyqtdarktheme
+pip install PyQt6
+```
+## QT_main_ICE_Display_dark.py
+
+![image](https://github.com/Mizogg/Hunting-with-PyQt5/assets/88630056/0af47c03-f90a-471d-ac89-c26100ed2abf)
+Thanks for Dark Theme  @firehawk52
+
+## QT_main_ICE_Display.py
+
+![image](https://github.com/Mizogg/Hunting-with-PyQt5/assets/88630056/c7b80bc4-97f5-4374-a0c6-17e189ae2258)
+
 
 MAIN QT_main_ICE.py
 
